@@ -65,6 +65,19 @@ done
 	fi
  touch openwrt_cdnip_update
  fi
+# 下载源：GitHub raw 优先，被墙或解析失败时自动回退到加速镜像
+ghraw="https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main"
+dl(){
+local p="$1" o="$2"
+for m in "$ghraw" \
+"https://ghproxy.net/https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main" \
+"https://ghfast.top/https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main" \
+"https://cdn.jsdelivr.net/gh/jane2003/openwrt_cdnip@main"; do
+  curl -ksSL -m 240 --retry 2 -o "$o" "$m/$p" && [ -s "$o" ] && return 0
+  rm -f "$o"
+done
+return 1
+}
 v6=$(curl -s6m5 ip.gs -k)
 ipv6test(){
 if [[ -n $v6 ]]; then
@@ -80,12 +93,12 @@ ipv6test
 read -p "请选择(回车默认为IPV4): " menu
 if [ -z $menu ] || [ "$menu" == "1" ]; then
 rm -rf ipv6.txt
-curl -s -O https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main/ip.txt
+dl ip.txt ip.txt
 IP_ADDR=ipv4
 elif [ "$menu" == "2" ]; then
 if [[ -n $v6 ]]; then
 rm -rf ip.txt
-curl -s -O https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main/ipv6.txt
+dl ipv6.txt ipv6.txt
 IP_ADDR=ipv6
 else
 echo "无IPV6网络" && cdnv4v6
@@ -209,10 +222,10 @@ install(){
 rm -rf /root/openwrt_cdnip/cdnip.sh
 mkdir -p /root/openwrt_cdnip
 cd /root/openwrt_cdnip
-curl -sSL https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main/cdnip.sh -o cdnip.sh
-curl -sSL https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main/cdnac.sh -o cdnac.sh
+dl cdnip.sh cdnip.sh
+dl cdnac.sh cdnac.sh
 if [ ! -f cfst ]; then
-curl -L -o cfst -# --retry 2 https://raw.githubusercontent.com/jane2003/openwrt_cdnip/main/bin/$cpu
+dl bin/$cpu cfst
 chmod +x cfst
 fi
 if [ ! -f cfst ] || [ ! -f cdnip.sh ] || [ ! -f cdnac.sh ]; then

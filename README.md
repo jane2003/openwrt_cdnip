@@ -61,6 +61,9 @@ bash cdnopw.sh
 3. 首次运行标记 `ygop_update` 改为 `openwrt_cdnip_update`。
 4. 菜单抬头改成项目地址与原作者署名。
 5. `install()` 里原本用相对路径 `mkdir -p cfipopw; cd cfipopw`，改为绝对路径，避免不在 `/root` 下执行时路径错乱。
+6. 依赖检测里去掉了 `base64` / `coreutils-base64`。原作者脚本是多层 base64 混淆的，运行必须依赖 base64；这版是解密后的明文，用不到，少装一个包。其余依赖（bash、jq、wget、curl、sed、unzip、tr、timeout）不变。
+
+以上改动已在 aarch64 OpenWrt 上完整跑通：菜单显示、下载全部文件、参数写入、cfst 测速、生成 `result.csv`、TG/Pushplus 提示均正常。
 
 ## 上游说明
 

@@ -72,7 +72,7 @@ fi
 
 cd /root/openwrt_cdnip/ && rm -rf informlog && bash cdnac.sh
 if [ "$ymorip" == "1" ]; then
-sed -i '/api.cloudflare.com/d' /etc/hosts
+sed -i -e '/^104\.18\.12\.137 api\.cloudflare\.com$/d' -e '/^104\.16\.160\.55 api\.cloudflare\.com$/d' -e '/^104\.16\.96\.55 api\.cloudflare\.com$/d' /etc/hosts
 proxy="false";
 max_retries=5
 for ((i=1; i<=$max_retries; i++)); do
@@ -82,14 +82,14 @@ for ((i=1; i<=$max_retries; i++)); do
         echo "Cloudflare账号登陆成功!"
         break
     elif [ $i -eq $max_retries ]; then
-        sed -i '/api.cloudflare.com/d' /etc/hosts
+        sed -i -e '/^104\.18\.12\.137 api\.cloudflare\.com$/d' -e '/^104\.16\.160\.55 api\.cloudflare\.com$/d' -e '/^104\.16\.96\.55 api\.cloudflare\.com$/d' /etc/hosts
         echo "尝试5次登陆CF失败，检查CF邮箱、区域ID、API Key，这三者信息是否填写正确，或者查下当前代理的网络能否打开Cloudflare官网？"
         pushmessage="尝试5次登陆CF失败，检查CF邮箱、区域ID、API Key，这三者信息是否填写正确，或者查下当前代理的网络能否打开Cloudflare官网？"
         tgaction
         exit
     else
         echo "Cloudflare账号登陆失败，尝试重连 ($i/$max_retries)..."
-	sed -i '/api.cloudflare.com/d' /etc/hosts
+	sed -i -e '/^104\.18\.12\.137 api\.cloudflare\.com$/d' -e '/^104\.16\.160\.55 api\.cloudflare\.com$/d' -e '/^104\.16\.96\.55 api\.cloudflare\.com$/d' /etc/hosts
         echo -e "104.18.12.137 api.cloudflare.com\n104.16.160.55 api.cloudflare.com\n104.16.96.55 api.cloudflare.com" >> /etc/hosts
         sleep 2
     fi
@@ -158,7 +158,7 @@ if [[ $(awk -F ',' 'NR==12 {print $1}' /root/openwrt_cdnip/result.csv) ]]; then
 awk -F ',' 'NR>1 && NR<=11 {print $1}' /root/openwrt_cdnip/result.csv > /root/openwrt_cdnip/new_result.csv
 mv /root/openwrt_cdnip/new_result.csv /root/openwrt_cdnip/result.csv
 fi
-sed -i '/api.cloudflare.com/d' /etc/hosts
+sed -i -e '/^104\.18\.12\.137 api\.cloudflare\.com$/d' -e '/^104\.16\.160\.55 api\.cloudflare\.com$/d' -e '/^104\.16\.96\.55 api\.cloudflare\.com$/d' /etc/hosts
 #goodip=$(awk -F ',' 'NR > 1 {print $1}' /root/openwrt_cdnip/result.csv | sed -n 1p)
 #echo "$goodip api.cloudflare.com" >> /etc/hosts
 else

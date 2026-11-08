@@ -1,0 +1,2 @@
+bin/* -text
+*.sh text eol=lf

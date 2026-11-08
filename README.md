@@ -126,8 +126,9 @@ bash cdnopw.sh
 6. 菜单抬头改成项目地址与原作者署名。
 7. `install()` 里原本用相对路径 `mkdir -p cfipopw; cd cfipopw`，改为绝对路径，避免不在 `/root` 下执行时路径错乱。
 8. 依赖检测里去掉了 `base64` / `coreutils-base64`。原作者脚本是多层 base64 混淆的，运行必须依赖 base64；这版是解密后的明文，用不到，少装一个包。其余依赖（bash、jq、wget、curl、sed、unzip、tr、timeout）不变。
+9. 修掉 hosts 误删：原作者在 CF 登录失败时会把三条备用 IP 写进 `/etc/hosts` 做兜底，收尾用 `sed -i '/api.cloudflare.com/d'` 一律清掉，结果连你自己手动固定的 `api.cloudflare.com` 记录也一起删。现在改成只删它自己写的那三条（`104.18.12.137`、`104.16.160.55`、`104.16.96.55`），其他行不动。
 
-以上改动已在 aarch64 OpenWrt 上完整跑通：菜单显示、下载全部文件、参数写入、cfst 测速、生成 `result.csv`、TG/Pushplus 提示均正常。
+以上改动已在 aarch64 OpenWrt 上完整跑通：菜单显示、下载全部文件、参数写入、cfst 测速、生成 `result.csv`、TG/Pushplus 提示均正常。最后一轮还特意在 `raw.githubusercontent.com` 解析不通的状态下跑了一遍：下载自动回退到镜像、安装照常完成，跑完后 `/etc/hosts` 与运行前逐字节一致。
 
 ## 上游说明
 

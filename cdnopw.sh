@@ -34,8 +34,8 @@ if [ ! -f openwrt_cdnip_update ]; then
 # 初始化包列表
 packages=""
 # 创建一个包名数组和一个命令名数组
-package_names=("bash" "jq" "wget" "curl" "sed" "unzip" "coreutils" "coreutils-timeout" "coreutils-base64")
-command_names=("bash" "jq" "wget" "curl" "sed" "unzip" "tr" "timeout" "base64")
+package_names=("bash" "jq" "wget" "curl" "sed" "unzip" "coreutils" "coreutils-timeout")
+command_names=("bash" "jq" "wget" "curl" "sed" "unzip" "tr" "timeout")
 # 遍历命令名数组
 for i in ${!command_names[@]}; do
   # 如果对应的命令没有安装，那么就把对应的包名添加到包列表中
@@ -53,7 +53,6 @@ done
 	        opkg update
 	        opkg install $packages
 	        opkg install coreutils-timeout
-	        opkg install coreutils-base64
             elif cat /etc/issue /proc/version /etc/os-release 2>/dev/null | grep -q -E -i "ubuntu|debian"; then
 	        sudo apt-get update -y
 	        sudo apt-get install $packages -y
